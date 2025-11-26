@@ -46,7 +46,7 @@ public class App {
 //    	
 //    	System.out.println(pizza);
     	
-    	//Template method Pattern
+    	//Template method Pattern--behavioral 
     	
 //    	DrinkMaker tea=new TeaMaker();
 //    	tea.prepareDrink();
@@ -56,9 +56,37 @@ public class App {
 //    	DrinkMaker coffee=new CoffeeMaker();
 //    	coffee.prepareDrink();
     	
-    	//Bridge Pattern
+    	//Bridge Pattern--structural
     	
+//    	Video youtubeHD=new Youtube(new HDProcessing());
+//    	youtubeHD.playVideo();
+//    		
+//    	Video youtube4K=new Youtube(new FourKProcessing());
+//    	youtube4K.playVideo();
+//    	
+//    	Video youtube8k=new Youtube(new EightKProcessing());
+//    	youtube8k.playVideo();
+//    	
+//    	Video primeHD=new PrimeChannel(new HDProcessing());
+//    	primeHD.playVideo();
+//    	
+//    	Video prime4K=new PrimeChannel(new FourKProcessing());
+//    	prime4K.playVideo();
+//    	
+//    	Video prime8k=new PrimeChannel(new EightKProcessing());
+//    	prime8k.playVideo();
     	
+    	//Proxy Pattern
+    	
+    	Payment netBanking=new NetBanking();
+    	netBanking.pay(5000);
+    	
+    	System.out.println();
+    	
+    	Payment upi=new UPIPayment();
+    	upi.pay(3000);
+    	
+    
     	
     	
     	
