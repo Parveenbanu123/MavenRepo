@@ -1,0 +1,142 @@
+create database mysql_proj;
+show databases;
+use  mysql_proj;
+
+create table Customer (
+ customerId int PRIMARY KEY ,
+ customerName varchar(50) NOT NULL ,
+ address varchar(50) NOT NULL ,
+ phoneNumber varchar(10) NOT NULL ,
+ email varchar(50) UNIQUE KEY ); 
+drop table customer;
+
+
+INSERT INTO Customer (customerId, customerName, address, phoneNumber, email) VALUES
+(1001, 'Aarav Sharma',   '12 MG Road, Bengaluru, KA 560001',   '9876543210', 'aarav.sharma@example.com'),
+(1002, 'Priya Nair',     '45 Brigade Rd, Bengaluru, KA 560025', '9822011122', 'priya.nair@example.com'),
+(1003, 'Rahul Gupta',    '221B Baker St, Mumbai, MH 400001',    '9930012345', 'rahul.gupta@example.com'),
+(1004, 'Sneha Reddy',    'Plot 7, Jubilee Hills, Hyderabad',    '9700001112', 'sneha.reddy@example.com'),
+(1005, 'Vikram Singh',   '5 Park St, Kolkata, WB 700016',       '9810087654', 'vikram.singh@example.com'),
+(1006, 'Neha Kapoor',    'DLF Phase 3, Gurugram, HR 122002',    '9999912345', 'neha.kapoor@example.com'),
+(1007, 'Arjun Mehta',    'FC Road, Pune, MH 411005',            '9766554433', 'arjun.mehta@example.com'),
+(1008, 'Divya Menon',    'Marine Drive, Kochi, KL 682001',      '9847001122', 'divya.menon@example.com'),
+(1009, 'Karthik Iyer',   'Adyar, Chennai, TN 600020',           '9884012345', 'karthik.iyer@example.com'),
+(1010, 'Ritu Verma',     'Sector 62, Noida, UP 201301',         '9873008877', 'ritu.verma@example.com'),
+(1011, 'Sanjay Rao',     'Banashankari, Bengaluru, KA 560070',  '9900022233', 'sanjay.rao@example.com'),
+(1012, 'Pooja Desai',    'Ellis Bridge, Ahmedabad, GJ 380006',  '9879123456', 'pooja.desai@example.com'),
+(1013, 'Mohit Bansal',   'Civil Lines, Jaipur, RJ 302006',      '9988887766', 'mohit.bansal@example.com'),
+(1014, 'Ananya Bose',    'Salt Lake, Kolkata, WB 700091',       '9836123456', 'ananya.bose@example.com'),
+(1015, 'Harsh Vardhan',  'Banjara Hills, Hyderabad, TS 500034', '9900112233', 'harsh.vardhan@example.com');
+
+create table Meter(
+  meterId int PRIMARY KEY,
+  customerId int NOT NULL,
+  installationDate date NOT NULL,
+  lastReadingDate date NOT NULL,
+  FOREIGN KEY (customerId) REFERENCES Customer(customerId) on delete cascade
+);
+
+
+INSERT INTO Meter (meterId, customerId, installationDate, lastReadingDate) VALUES
+(5001, 1001, '2024-01-15', '2025-10-10'),
+(5002, 1002, '2024-02-01', '2025-10-12'),
+(5003, 1003, '2024-03-05', '2025-10-15'),
+(5004, 1004, '2024-04-18', '2025-10-20'),
+(5005, 1005, '2024-05-10', '2025-10-22'),
+(5006, 1006, '2024-06-01', '2025-10-25'),
+(5007, 1007, '2024-07-12', '2025-10-26'),
+(5008, 1008, '2024-08-03', '2025-10-28'),
+(5009, 1009, '2024-09-09', '2025-10-30'),
+(5010, 1010, '2024-10-15', '2025-11-01'),
+(5011, 1011, '2024-11-20', '2025-11-05'),
+(5012, 1012, '2024-12-01', '2025-11-10'),
+(5013, 1013, '2024-12-15', '2025-11-15'),
+(5014, 1014, '2025-01-05', '2025-11-20'),
+(5015, 1015, '2025-02-10', '2025-11-25');
+
+create table ElectricityUsage(
+	usageId int PRIMARY KEY,
+    meterId int,
+    readingDate date NOT NULL,
+    usageUnit int ,
+    FOREIGN KEY (meterId) REFERENCES Meter(meterId) on delete cascade,
+    CONSTRAINT chk_constraint check(usageUnit >=0)
+);
+alter table ElectricityUsage modify usageUnit double(10,2) NOT NULL;
+
+INSERT INTO ElectricityUsage (usageId, meterId, readingDate, usageUnit) VALUES
+(7001, 5001, '2025-10-01', 12.50),
+(7002, 5002, '2025-10-02', 15.75),
+(7003, 5003, '2025-10-03', 9.30),
+(7004, 5004, '2025-10-04', 18.20),
+(7005, 5005, '2025-10-05', 22.00),
+(7006, 5006, '2025-10-06', 14.10),
+(7007, 5007, '2025-10-07', 11.95),
+(7008, 5008, '2025-10-08', 19.60),
+(7009, 5009, '2025-10-09', 17.25),
+(7010, 5010, '2025-10-10', 13.80),
+(7011, 5011, '2025-10-11', 20.40),
+(7012, 5012, '2025-10-12', 16.00),
+(7013, 5013, '2025-10-13', 21.75),
+(7014, 5014, '2025-10-14', 10.50),
+(7015, 5015, '2025-10-15', 23.10);
+
+create table Bill(
+	billId int PRIMARY KEY,
+    meterId int,
+    billdate date NOT NULL,
+    amountDue double(10,2) NOT NULL,
+    dueDate date NOT NULL,
+    paid boolean NOT NULL DEFAULT 0,
+    FOREIGN KEY (meterId) REFERENCES Meter(meterId) on delete cascade,
+    CONSTRAINT chkBill_constraint check (amountDue >=0)
+);
+
+
+INSERT INTO Bill (billId, meterId, billDate, amountDue, dueDate, paid) VALUES
+(9001, 5001, '2025-10-01',  450.75, '2025-10-15', 1),
+(9002, 5002, '2025-10-02',  389.50, '2025-10-16', 0),
+(9003, 5003, '2025-10-03',  512.30, '2025-10-17', 1),
+(9004, 5004, '2025-10-04',  275.00, '2025-10-18', 0),
+(9005, 5005, '2025-10-05',  620.10, '2025-10-19', 0),
+(9006, 5006, '2025-10-06',  310.25, '2025-10-20', 1),
+(9007, 5007, '2025-10-07',  428.90, '2025-10-21', 0),
+(9008, 5008, '2025-10-08',  399.99, '2025-10-22', 1),
+(9009, 5009, '2025-10-09',  533.40, '2025-10-23', 0),
+(9010, 5010, '2025-10-10',  288.00, '2025-10-24', 0),
+(9011, 5011, '2025-10-11',  470.60, '2025-10-25', 1),
+(9012, 5012, '2025-10-12',  350.00, '2025-10-26', 0),
+(9013, 5013, '2025-10-13',  615.75, '2025-10-27', 1),
+(9014, 5014, '2025-10-14',  255.45, '2025-10-28', 0),
+(9015, 5015, '2025-10-15',  702.20, '2025-10-29', 0);
+
+
+create table Payment(
+	paymentId int PRIMARY KEY,
+    billId int,
+    paymentDate date NOT NULL,
+    amountPaid double(10,2) NOT NULL,
+    FOREIGN KEY (billId) REFERENCES Bill(billId) on delete cascade,
+    CONSTRAINT chkPay_constraint check (amountPaid >=0)
+);
+
+
+INSERT INTO Payment (paymentId, billId, paymentDate, amountPaid) VALUES
+(10001, 9001, '2025-10-10', 450.75), 
+(10002, 9002, '2025-10-14', 200.00),  
+(10003, 9003, '2025-10-12', 512.30),  
+(10004, 9004, '2025-10-16', 150.00),  
+(10005, 9005, '2025-10-20', 300.00),  
+(10006, 9006, '2025-10-19', 310.25), 
+(10007, 9007, '2025-10-22', 428.90),  
+(10008, 9008, '2025-10-21', 399.99),  
+(10009, 9009, '2025-10-23', 300.00), 
+(10010, 9010, '2025-10-24', 288.00),  
+(10011, 9011, '2025-10-25', 470.60),  
+(10012, 9012, '2025-10-26', 200.00), 
+(10013, 9013, '2025-10-27', 615.75),  
+(10014, 9014, '2025-10-28', 255.45),  
+(10015, 9015, '2025-10-29', 350.00); 
+
+
+select * from bill;
