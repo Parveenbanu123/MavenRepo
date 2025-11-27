@@ -8,7 +8,7 @@ create table Customer (
  address varchar(50) NOT NULL ,
  phoneNumber varchar(10) NOT NULL ,
  email varchar(50) UNIQUE KEY ); 
-drop table customer;
+
 
 
 INSERT INTO Customer (customerId, customerName, address, phoneNumber, email) VALUES
@@ -58,11 +58,10 @@ create table ElectricityUsage(
 	usageId int PRIMARY KEY,
     meterId int,
     readingDate date NOT NULL,
-    usageUnit int ,
+    usageUnit double(10,2) NOT NULL ,
     FOREIGN KEY (meterId) REFERENCES Meter(meterId) on delete cascade,
     CONSTRAINT chk_constraint check(usageUnit >=0)
 );
-alter table ElectricityUsage modify usageUnit double(10,2) NOT NULL;
 
 INSERT INTO ElectricityUsage (usageId, meterId, readingDate, usageUnit) VALUES
 (7001, 5001, '2025-10-01', 12.50),
@@ -139,4 +138,40 @@ INSERT INTO Payment (paymentId, billId, paymentDate, amountPaid) VALUES
 (10015, 9015, '2025-10-29', 350.00); 
 
 
-select * from bill;
+-- Write a query to fetch the records of all the above tables.
+
+select * from customer  join meter  using(customerId) join electricityUsage using(meterId) join bill using(meterId) join payment using(billId);
+
+
+-- Write a query to get total electricity usage per Meter, only for meters with usage greater than 200 units.
+
+select meterId,sum(usageUnit) as totalUsage from electricityUsage group by meterId having sum(usageUnit) > 200;
+
+
+-- Write a query to list all customers and their total unpaid bill amounts, ordered by amount due in descending
+
+select c.customerId,c.customerName,sum(b.amountDue) as totalUnpaidAmount from customer  c left join meter  m 
+using(customerId) left join bill  b using(meterId) where b.paid = 0 group by c.customerId
+order by totalUnpaidAmount desc;
+
+
+-- Write a query to get all bills along with payment status, sorted by BillDate in ascending
+
+select billId,meterId,billDate,amountDue,dueDate,
+case when paid=0 then 'Amount Paid' else 'Amount Pending' end as 'Payment Status' from Bill order by billDate; 
+
+
+-- Write a query to find all customers who have at least one meter installed after 2023-12-01
+
+select distinct c.customerId, c.customerName, c.address, c.phoneNumber, c.email,m.installationDate
+from Customer c
+join Meter m on c.customerId = m.customerId
+where m.installationDate > '2023-12-01';
+
+
+-- Write a query to show meters with their last reading date and the total usage units in descending order of usage
+
+select m.meterId,m.lastReadingDate,SUM(eu.usageUnit)  as totalUsage from meter  m
+join electricityUsage  eu on eu.meterId = m.meterId
+group by m.meterId, m.lastReadingDate
+order by totalUsage desc;
