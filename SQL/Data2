@@ -1,0 +1,75 @@
+SELECT * FROM mphdb.stud;
+desc stud;
+INSERT INTO stud (firstname, lastname, id, marks) VALUES
+('Alice', 'Johnson', 1, 85.5),
+('Bob', 'Smith', 2, 78.0),
+('Charlie', 'Brown', 3, 92.3),
+('David', 'Williams', 4, 66.8),
+('Eva', 'Taylor', 5, 74.2),
+('Frank', 'Anderson', 6, 88.9),
+('Grace', 'Thomas', 7, 91.0),
+('Hannah', 'Moore', 8, 69.5),
+('Ian', 'Martin', 9, 82.7),
+('Jack', 'Lee', 10, 95.4),
+('Karen', 'Clark', 11, 72.6),
+('Leo', 'Lewis', 12, 80.1),
+('Mona', 'Walker', 13, 87.3),
+('Nick', 'Hall', 14, 90.0),
+('Olivia', 'Allen', 15, 76.4);
+
+delimiter //
+create procedure grade(in sid int)
+begin
+	declare m double;
+	select marks into m from stud where id=sid;
+    if m>90 then
+	select 'Grade A' as result;
+	elseif m>70 then
+	select 'Grade B' as result;
+    elseif m>50 then
+    select 'Grade C'as result;
+    elseif m<50 then
+    select 'FAIL' as result;
+	end if;
+end //
+
+call grade(3);
+
+delimiter //
+create procedure while_ex1()
+begin
+declare i int default 1;
+while i <10
+do
+select i as result;
+set i=i+1;
+end while;
+end //
+
+call while_ex1();
+
+delimiter //
+create procedure repeat_ex1()
+begin
+declare i int default 1;
+repeat 
+select i as result;
+set i=i+1;
+until i>10
+end repeat;
+end //
+
+call repeat_ex1()
+
+-- Functions
+
+delimiter //
+create function getFullName(fname varchar(10),lname varchar(10))
+returns varchar(50)
+deterministic
+begin
+return concat(fname,' ',lname);
+end //
+	
+select getFullName('Parveen','Banu');
+
